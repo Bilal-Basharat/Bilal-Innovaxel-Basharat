@@ -10,3 +10,4 @@ use Illuminate\Support\Facades\Route;
 Route::resource('shorten', ShortenUrlController::class)
 ->only(['store', 'show', 'update', 'destroy']);
 
+Route::get('click', [ShortenUrlController::class, 'clickStats']);

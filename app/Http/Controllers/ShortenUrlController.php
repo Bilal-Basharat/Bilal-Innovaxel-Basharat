@@ -24,7 +24,7 @@ class ShortenUrlController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Short url created successfully',
-                'short_url' => config('app.short_url_domain'). '/'.$shortUrl->short_code
+                'short_url' => config('app.short_url_domain') . '/' . $shortUrl->short_code
             ], 201);
 
         } catch (Exception $ex) {
@@ -46,7 +46,7 @@ class ShortenUrlController extends Controller
 
             $url = ShortUrl::where('short_code', $validated['short_code'])->first()->value('url');
 
-            if(empty($url)){
+            if (empty($url)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Short url not found',
@@ -76,8 +76,8 @@ class ShortenUrlController extends Controller
             ]);
 
             $updateUrl = ShortUrl::where('short_code', $short_code);
-            
-            if(empty($updateUrl)){
+
+            if (empty($updateUrl)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Short url not found',
@@ -91,7 +91,7 @@ class ShortenUrlController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Short url updated successfully',
-                'short_url' => config('app.short_url_domain'). '/'.$short_code
+                'short_url' => config('app.short_url_domain') . '/' . $short_code
             ], 200);
 
         } catch (Exception $exception) {
@@ -106,9 +106,9 @@ class ShortenUrlController extends Controller
     public function destroy($short_code)
     {
         try {
-            $url =ShortUrl::where('short_code', $short_code);
+            $url = ShortUrl::where('short_code', $short_code);
 
-            if(empty($url)){
+            if (empty($url)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Short url not found',
@@ -133,10 +133,10 @@ class ShortenUrlController extends Controller
 
     public function redirect($short_code)
     {
-        try{
+        try {
             $url = ShortUrl::where('short_code', $short_code)->first();
 
-            if(empty($url)){
+            if (empty($url)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Short url not found',
@@ -146,13 +146,47 @@ class ShortenUrlController extends Controller
             AccessCount::where('short_url_id', $url->id)->increment('access_count');
 
             return redirect()->away($url->url);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong',
                 'error' => $exception->getMessage(),
             ], 404);
+        }
+    }
+
+    public function clickStats(Request $request)
+    {
+        $validated = $request->validate([
+            'short_code' => 'required|exists:short_urls,short_code'
+        ]);
+
+        try {
+            
+            $url = ShortUrl::where('short_code', $validated['short_code'])->first();
+
+            if (empty($url)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Short url not found',
+                ], 404);
+            }
+
+            $accessCount = AccessCount::where('short_url_id', $url->id)->first()->access_count;
+
+            return response()->json([
+                'success' => true,
+                'url' => $url->url,
+                'shortCode' => $url->short_code,
+                'access_count' => $accessCount
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $exception->getMessage(),
+            ], 500);
         }
     }
 }

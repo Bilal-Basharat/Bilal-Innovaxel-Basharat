@@ -85,4 +85,23 @@ class ShortenUrlController extends Controller
             ], 404);
         }
     }
+
+    public function destroy($short_code)
+    {
+        try {
+            ShortUrl::where('short_code', $short_code)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Short url deleted successfully',
+            ], 204);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Short url not found',
+                'error' => $exception->getMessage(),
+            ], 404);
+        }
+    }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('short_url_id')->constrained()->cascadeOnDelete();
-            $table->integer('access_count')->default(0);
+            $table->unsignedBigInteger('access_count')->default(0);
 
             $table->timestamps();
         });

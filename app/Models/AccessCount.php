@@ -8,6 +8,11 @@ class AccessCount extends Model
 {
     protected $table = 'access_counts';
 
+     protected $fillable = [
+        'access_count',  
+        'short_url_id'
+    ];
+
     protected $casts = [
         'access_count' => 'integer'
     ];

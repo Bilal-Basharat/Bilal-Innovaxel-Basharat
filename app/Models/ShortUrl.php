@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ShortCodeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,14 +15,31 @@ class ShortUrl extends Model
         'short_code',
     ];
 
+    protected static function booted(){
+        static::creating(function($model){
+            if(empty($model->short_code)){
+                $model->short_code = app(ShortCodeService::class)->generateUniqueCode();
+            }
+        });
+
+        static::created(function($model){
+            $model->accessCounts()->create(['access_count' => 0]);
+        });
+    }
+    
     public function accessCounts()
     {
-        return $this->hasMany(AccessCount::class);
+        return $this->hasOne(AccessCount::class);
     }
 
     public function getAccessCountAttribute()
     {
         return $this->accessCounts()->sum('access_count');
+    }
+
+    public function getShortUrlAttribute()
+    {
+        return url('/s/',$this->short_code);
     }
 
 }

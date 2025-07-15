@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccessCount;
 use App\Models\ShortUrl;
 use Exception;
 use Illuminate\Http\Request;
@@ -45,6 +46,13 @@ class ShortenUrlController extends Controller
 
             $url = ShortUrl::where('short_code', $validated['short_code'])->first()->value('url');
 
+            if(empty($url)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Short url not found',
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Url found successfully',
@@ -67,7 +75,16 @@ class ShortenUrlController extends Controller
                 'url' => 'required|url'
             ]);
 
-            ShortUrl::where('short_code', $short_code)->update([
+            $updateUrl = ShortUrl::where('short_code', $short_code);
+            
+            if(empty($updateUrl)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Short url not found',
+                ], 404);
+            }
+
+            $updateUrl->update([
                 'url' => $validated['url']
             ]);
 
@@ -89,7 +106,16 @@ class ShortenUrlController extends Controller
     public function destroy($short_code)
     {
         try {
-            ShortUrl::where('short_code', $short_code)->delete();
+            $url =ShortUrl::where('short_code', $short_code);
+
+            if(empty($url)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Short url not found',
+                ], 404);
+            }
+
+            $url->delete();
 
             return response()->json([
                 'success' => true,
@@ -100,6 +126,31 @@ class ShortenUrlController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Short url not found',
+                'error' => $exception->getMessage(),
+            ], 404);
+        }
+    }
+
+    public function redirect($short_code)
+    {
+        try{
+            $url = ShortUrl::where('short_code', $short_code)->first();
+
+            if(empty($url)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Short url not found',
+                ], 404);
+            }
+
+            AccessCount::where('short_url_id', $url->id)->increment('access_count');
+
+            return redirect()->away($url->url);
+        }
+        catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
                 'error' => $exception->getMessage(),
             ], 404);
         }

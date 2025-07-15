@@ -37,9 +37,4 @@ class ShortUrl extends Model
         return $this->accessCounts()->sum('access_count');
     }
 
-    public function getShortUrlAttribute()
-    {
-        return url('/s/',$this->short_code);
-    }
-
 }

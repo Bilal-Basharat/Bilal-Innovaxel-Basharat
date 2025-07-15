@@ -4,3 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 const AppRoutes = () => {
     return (
         <Router>
+</Router>
+    );
+};
+
+    export default AppRoutes;

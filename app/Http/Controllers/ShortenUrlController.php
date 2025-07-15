@@ -23,7 +23,7 @@ class ShortenUrlController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Short url created successfully',
-                'short_url' => $shortUrl->short_code
+                'short_url' => config('app.short_url_domain'). '/'.$shortUrl->short_code
             ], 201);
 
         } catch (Exception $ex) {
@@ -49,6 +49,32 @@ class ShortenUrlController extends Controller
                 'success' => true,
                 'message' => 'Url found successfully',
                 'url' => $url
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Short url not found',
+                'error' => $exception->getMessage(),
+            ], 404);
+        }
+    }
+
+    public function update(Request $request, $short_code)
+    {
+        try {
+            $validated = $request->validate([
+                'url' => 'required|url'
+            ]);
+
+            ShortUrl::where('short_code', $short_code)->update([
+                'url' => $validated['url']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Short url updated successfully',
+                'short_url' => config('app.short_url_domain'). '/'.$short_code
             ], 200);
 
         } catch (Exception $exception) {

@@ -7,8 +7,8 @@ const AppRoutes = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/shorten-url" />} />
-                <Route path="/shorten-url" element={<ShortenUrl />} />
+                <Route path="/" element={<Navigate to="app/shorten-url" />} />
+                <Route path="app/shorten-url" element={<ShortenUrl />} />
             </Routes>
 </Router>
     );

@@ -47,3 +47,11 @@ Retrieve access statistics for a short URL.
 - **Backend:** PHP (Laravel)  
 - **Frontend:** React.js  
 - **Database:** MySQL
+
+## Instructions for executing the project
+ - Download or clone the project
+ - Run "composer install"
+ - Run "npm install"
+ - After that run the following commands to execute the project in local server
+   - php artisan serve
+   - npm run dev

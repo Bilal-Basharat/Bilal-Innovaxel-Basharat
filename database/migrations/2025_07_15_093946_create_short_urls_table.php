@@ -17,6 +17,7 @@ return new class extends Migration
             
             $table->text('url');
             $table->string('short_code')->unique();
+            $table->unsignedBigInteger('access_count')->default(0);
 
             $table->timestamps();
         });

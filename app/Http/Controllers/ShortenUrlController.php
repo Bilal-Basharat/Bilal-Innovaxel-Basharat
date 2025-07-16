@@ -143,7 +143,8 @@ class ShortenUrlController extends Controller
                 ], 404);
             }
 
-            AccessCount::where('short_url_id', $url->id)->increment('access_count');
+            $url->increment('access_count');
+            $url->save();
 
             return redirect()->away($url->url);
         } catch (Exception $exception) {
@@ -172,7 +173,7 @@ class ShortenUrlController extends Controller
                 ], 404);
             }
 
-            $accessCount = AccessCount::where('short_url_id', $url->id)->first()->access_count;
+            $accessCount = $url->access_count;
 
             return response()->json([
                 'success' => true,

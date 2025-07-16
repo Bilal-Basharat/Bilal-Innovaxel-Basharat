@@ -13,6 +13,11 @@ class ShortUrl extends Model
     protected $fillable = [
         'url',
         'short_code',
+        'access_count'
+    ];
+
+    protected $casts = [
+        'access_count' => 'integer'
     ];
 
     protected static function booted(){
@@ -21,20 +26,6 @@ class ShortUrl extends Model
                 $model->short_code = app(ShortCodeService::class)->generateUniqueCode();
             }
         });
-
-        static::created(function($model){
-            $model->accessCounts()->create(['access_count' => 0]);
-        });
-    }
-    
-    public function accessCounts()
-    {
-        return $this->hasOne(AccessCount::class);
-    }
-
-    public function getAccessCountAttribute()
-    {
-        return $this->accessCounts()->sum('access_count');
     }
 
 }

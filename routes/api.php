@@ -8,6 +8,6 @@ use Illuminate\Support\Facades\Route;
 // Route::put('shorten/{short_code}', [ShortenUrlController::class, 'update']);
 // Route::delete('shorten/{short_code}', [ShortenUrlController::class, 'destroy']);
 Route::resource('shorten', ShortenUrlController::class)
-->only(['store', 'show', 'update', 'destroy']);
+->only(['store', 'index', 'show', 'update', 'destroy']);
 
 Route::get('clicks', [ShortenUrlController::class, 'clickStats']);

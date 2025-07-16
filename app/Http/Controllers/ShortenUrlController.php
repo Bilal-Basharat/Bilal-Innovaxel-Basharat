@@ -37,6 +37,28 @@ class ShortenUrlController extends Controller
         }
     }
 
+    public function index()
+    {
+        try {
+
+            $urls = ShortUrl::all()->map(function ($url) {
+                $url->short_code = config('app.short_url_domain') . '/' . $url->short_code;
+                return $url;
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $urls
+            ]);
+        } catch (Exception $ex) {
+
+            return response()->json([
+                'success' => false,
+                'error' => $ex->getMessage()
+            ]);
+        }
+    }
+
     public function show($short_code)
     {
         try {
@@ -163,7 +185,7 @@ class ShortenUrlController extends Controller
         ]);
 
         try {
-            
+
             $url = ShortUrl::where('short_code', $validated['short_code'])->first();
 
             if (empty($url)) {

@@ -123,5 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'short_url_domain' => env('SHORT_URL_DOMAIN', 'https://snip.ly'),
+    'short_url_domain' => env('SHORT_URL_DOMAIN', 'http://127.0.0.1:8000'),
 ];
